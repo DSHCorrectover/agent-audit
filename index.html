@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Output Reliability Audit — Correctover</title>
+<meta name="description" content="5-day fixed-price audit. 116 detection rules. Semantic intent analysis. We find what checklist tools miss.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;color:#e0e0e0;line-height:1.6}
+.container{max-width:720px;margin:0 auto;padding:60px 24px}
+h1{font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-0.5px}
+.subtitle{font-size:1.15rem;color:#888;margin-bottom:40px}
+.badge{display:inline-block;background:#1a1a2e;border:1px solid #2a2a4a;color:#7c8cf8;padding:4px 12px;border-radius:4px;font-size:0.8rem;font-family:monospace;margin-bottom:24px}
+.cta-box{background:#111;border:1px solid #222;border-radius:12px;padding:32px;margin:32px 0}
+.price{font-size:2.5rem;font-weight:700;color:#fff}
+.price span{font-size:1rem;color:#888;font-weight:400}
+.cta-button{display:inline-block;background:#7c8cf8;color:#000;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;transition:background 0.2s}
+.cta-button:hover{background:#9ba8ff}
+.section{margin:40px 0}
+h2{font-size:1.3rem;color:#fff;margin-bottom:16px;font-weight:600}
+table{width:100%;border-collapse:collapse;margin:16px 0}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid #1a1a1a;font-size:0.92rem}
+th{color:#888;font-weight:500;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.5px}
+td:first-child{color:#7c8cf8;font-weight:500;white-space:nowrap}
+ul{list-style:none;padding:0}
+li{padding:8px 0;padding-left:24px;position:relative;color:#ccc}
+li:before{content:"→";position:absolute;left:0;color:#7c8cf8;font-weight:700}
+.process-step{display:flex;gap:16px;margin:16px 0}
+.step-num{background:#1a1a2e;color:#7c8cf8;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0}
+.step-content h3{font-size:0.95rem;color:#fff;margin-bottom:2px}
+.step-content p{font-size:0.88rem;color:#888}
+.author{background:#111;border:1px solid #222;border-radius:12px;padding:24px;margin:32px 0}
+.author strong{color:#fff}
+.author p{color:#aaa;font-size:0.9rem;margin-top:8px}
+a{color:#7c8cf8}
+.footer{margin-top:60px;padding-top:24px;border-top:1px solid #1a1a1a;color:#555;font-size:0.8rem;text-align:center}
+.highlight{color:#7c8cf8;font-weight:600}
+.code{font-family:monospace;background:#1a1a1a;padding:2px 6px;border-radius:3px;font-size:0.88rem;color:#9ba8ff}
+.dim-box{background:#0d0d14;border:1px solid #1a1a2e;border-radius:8px;padding:20px;margin:12px 0}
+.dim-box h3{color:#7c8cf8;font-size:0.95rem;margin-bottom:8px}
+.dim-box p{color:#999;font-size:0.88rem}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="badge">116 detection rules · Semantic intent analysis · Proven on production systems</div>
+
+<h1>Your AI agent's output will fail in production.</h1>
+<p class="subtitle">A malformed field. A credential in a code block. A tool response that injects a command. A schema that drifts. These aren't theoretical — they're happening right now in agent systems that look fine in demos.</p>
+
+<div class="cta-box">
+  <div class="price">$5,000 <span>fixed price · 5 business days</span></div>
+  <p style="color:#888;margin-top:8px">I test your agent's output layer across 7 dimensions with 116 detection rules. You get a report with every issue, reproduction steps, and fixes. All async over email — no meetings.</p>
+  <a class="cta-button" href="mailto:wangguigui@correctover.com?subject=Agent%20Output%20Audit">Start the audit →</a>
+</div>
+
+<div class="section">
+<h2>What I test</h2>
+
+<div class="dim-box">
+<h3>Structure & Schema</h3>
+<p>Every output path that can break downstream parsers — malformed JSON, missing fields, type mismatches, enum drift, nested object errors. Tested across normal, edge-case, and adversarial inputs.</p>
+</div>
+
+<div class="dim-box">
+<h3>Security</h3>
+<p>Credential leakage in outputs (AWS/GCP/Azure/SSH tokens in code blocks), prompt injection through tool responses, unsafe content pass-through, command injection vectors. <span class="highlight">Not keyword matching — semantic intent analysis</span> that traces whether <span class="code">exec()</span> is sandboxed, whether dictionary keys are constant, whether a code path is a legitimate engine or an exploit.</p>
+</div>
+
+<div class="dim-box">
+<h3>Identity & Integrity</h3>
+<p>Agent spoofing, unverified tool call sources, missing identity attestation, output tampering, response injection. If your agent can't prove who it is and that its output wasn't modified, it can't be trusted with production systems.</p>
+</div>
+
+<div class="dim-box">
+<h3>Latency & Cost</h3>
+<p>P50/P99 outliers under load, unbounded response times, token explosion on long contexts, loop amplification, budget breach paths. Agents that work in demos can cost 10x expected in production.</p>
+</div>
+</div>
+
+<div class="section">
+<h2>Why this isn't a checklist</h2>
+<p style="color:#aaa;margin-bottom:16px">Anyone can read a public standard and build a checkbox. What you're paying for:</p>
+<ul>
+<li><strong>116 detection rules</strong> — 106 CCS runtime rules + 10 MCP protocol rules, built from real-world analysis of agent frameworks. These aren't in any public document.</li>
+<li><strong>Semantic intent engine</strong> — doesn't match keywords, understands code intent. Traced <span class="code">exec()</span> through 5 layers of analysis (isDictKeyConstant → isSandboxedExec → isCodeExecutionEngine → isSafeEvalPattern → CRITICAL) on production codebases. Reduced 27 false positives to 0 on the AgenticX test suite.</li>
+<li><strong>Proven on real systems</strong> — verified vulnerabilities in production AI infrastructure (including mcp-remote CVE-2025-6514, CVSS 9.6), merged security contributions into EMILIA and CrewAI, 14,560 validated executions in an independent study.</li>
+<li><strong>Independent</strong> — I don't sell a platform, don't push a product, don't have a quota. I deliver findings.</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>What you get</h2>
+<ul>
+<li><strong>Audit Report (PDF)</strong> — Every finding with severity (Critical/High/Medium/Low), reproduction steps, and specific fixes with code examples</li>
+<li><strong>Verification profile</strong> — A ready-to-run configuration for your agent's expected output shape, usable in CI/CD</li>
+<li><strong>30-day email follow-up</strong> — One round of questions after you review the report</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Process</h2>
+<div class="process-step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <h3>Day 1 — Scope</h3>
+    <p>You send sample agent outputs, tool definitions, and expected schemas. Or I test against your staging endpoint.</p>
+  </div>
+</div>
+<div class="process-step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <h3>Days 2–4 — Deep verification</h3>
+    <p>116 rules across all 7 dimensions, including adversarial inputs, edge cases, and semantic code path analysis.</p>
+  </div>
+</div>
+<div class="process-step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <h3>Day 5 — Delivery</h3>
+    <p>Full report with findings, fixes, and verification profile.</p>
+  </div>
+</div>
+</div>
+
+<div class="author">
+  <strong>Guigui Wang</strong> — Correctover
+  <p>I build runtime verification for AI agent systems. My verification engine (<span class="code">ccs-verifier</span> on PyPI) runs at sub-millisecond latency (P50 &lt;10µs) and has been integrated into production agent frameworks. I've contributed security fixes to EMILIA (PR merged) and CrewAI (PR open). The underlying conformance framework is documented in an IETF Internet-Draft, but the 116 rules and semantic analysis engine are proprietary — built from testing real systems, not from reading specifications.</p>
+</div>
+
+<div class="footer">
+  Correctover — Runtime Verification for Agent Systems<br>
+  <a href="https://correctover.com">correctover.com</a> · <a href="mailto:wangguigui@correctover.com">wangguigui@correctover.com</a>
+</div>
+
+</div>
+</body>
+</html>
+<!-- deployment marker 20260826112754 -->
