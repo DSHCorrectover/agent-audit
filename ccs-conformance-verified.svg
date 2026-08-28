@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="20" role="img" aria-label="CCS: conformance verified v1.4.0">
+  <title>CCS Conformance Verified v1.4.0</title>
+  <linearGradient id="s" x2="0" y2="100%">
+    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+    <stop offset="1" stop-opacity=".1"/>
+  </linearGradient>
+  <clipPath id="r">
+    <rect width="240" height="20" rx="3" fill="#fff"/>
+  </clipPath>
+  <g clip-path="url(#r)">
+    <rect width="38" height="20" fill="#444d56"/>
+    <rect x="38" width="122" height="20" fill="#2ea043"/>
+    <rect x="160" width="80" height="20" fill="#238636"/>
+    <rect width="240" height="20" fill="url(#s)"/>
+  </g>
+  <g fill="#fff" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11" text-anchor="middle" text-rendering="geometricPrecision">
+    <text x="19" y="14" fill="#e1e4e8" font-weight="bold">CCS</text>
+    <text x="99" y="14">conformance</text>
+    <text x="200" y="14" font-size="10">verified v1.4.0</text>
+  </g>
+</svg>
