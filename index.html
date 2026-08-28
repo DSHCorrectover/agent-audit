@@ -3,139 +3,858 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agent Output Reliability Audit — Correctover</title>
-<meta name="description" content="5-day fixed-price audit. 116 detection rules. Semantic intent analysis. We find what checklist tools miss.">
+<title>AI Agent Output Audit — Correctover</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;color:#e0e0e0;line-height:1.6}
-.container{max-width:720px;margin:0 auto;padding:60px 24px}
-h1{font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-0.5px}
-.subtitle{font-size:1.15rem;color:#888;margin-bottom:40px}
-.badge{display:inline-block;background:#1a1a2e;border:1px solid #2a2a4a;color:#7c8cf8;padding:4px 12px;border-radius:4px;font-size:0.8rem;font-family:monospace;margin-bottom:24px}
-.cta-box{background:#111;border:1px solid #222;border-radius:12px;padding:32px;margin:32px 0}
-.price{font-size:2.5rem;font-weight:700;color:#fff}
-.price span{font-size:1rem;color:#888;font-weight:400}
-.cta-button{display:inline-block;background:#7c8cf8;color:#000;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:16px;transition:background 0.2s}
-.cta-button:hover{background:#9ba8ff}
-.section{margin:40px 0}
-h2{font-size:1.3rem;color:#fff;margin-bottom:16px;font-weight:600}
-table{width:100%;border-collapse:collapse;margin:16px 0}
-th,td{text-align:left;padding:12px 16px;border-bottom:1px solid #1a1a1a;font-size:0.92rem}
-th{color:#888;font-weight:500;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.5px}
-td:first-child{color:#7c8cf8;font-weight:500;white-space:nowrap}
-ul{list-style:none;padding:0}
-li{padding:8px 0;padding-left:24px;position:relative;color:#ccc}
-li:before{content:"→";position:absolute;left:0;color:#7c8cf8;font-weight:700}
-.process-step{display:flex;gap:16px;margin:16px 0}
-.step-num{background:#1a1a2e;color:#7c8cf8;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0}
-.step-content h3{font-size:0.95rem;color:#fff;margin-bottom:2px}
-.step-content p{font-size:0.88rem;color:#888}
-.author{background:#111;border:1px solid #222;border-radius:12px;padding:24px;margin:32px 0}
-.author strong{color:#fff}
-.author p{color:#aaa;font-size:0.9rem;margin-top:8px}
-a{color:#7c8cf8}
-.footer{margin-top:60px;padding-top:24px;border-top:1px solid #1a1a1a;color:#555;font-size:0.8rem;text-align:center}
-.highlight{color:#7c8cf8;font-weight:600}
-.code{font-family:monospace;background:#1a1a1a;padding:2px 6px;border-radius:3px;font-size:0.88rem;color:#9ba8ff}
-.dim-box{background:#0d0d14;border:1px solid #1a1a2e;border-radius:8px;padding:20px;margin:12px 0}
-.dim-box h3{color:#7c8cf8;font-size:0.95rem;margin-bottom:8px}
-.dim-box p{color:#999;font-size:0.88rem}
+  /* ── Reset & Base ─────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0a0a0f;
+    --bg-alt:    #0e0e16;
+    --bg-card:   rgba(255,255,255,0.025);
+    --border:    rgba(255,255,255,0.07);
+    --border-hi: rgba(0,212,170,0.25);
+    --text:      #d4d4dc;
+    --text-hi:   #f0f0f5;
+    --text-dim:  #6e6e82;
+    --accent:    #00d4aa;
+    --accent-dim: rgba(0,212,170,0.12);
+    --accent-glow: rgba(0,212,170,0.35);
+    --yellow:    #d4a72c;
+    --red:       #e05555;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* subtle dot grid */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Top Bar ──────────────────────────────────────── */
+  .topbar {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+  .brand span { color: var(--accent); }
+  .topbar-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .pulse-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  /* ── Hero ─────────────────────────────────────────── */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    position: relative;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    max-width: 500px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.4;
+  }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 700;
+    color: var(--text-hi);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .hero-sub {
+    font-family: var(--mono);
+    font-size: clamp(14px, 2.5vw, 17px);
+    color: var(--text);
+    margin-bottom: 40px;
+  }
+  .hero-sub .sep { color: var(--text-dim); margin: 0 6px; }
+  .hero-sub .price { color: var(--accent); }
+
+  .cta {
+    display: inline-block;
+    padding: 14px 36px;
+    background: var(--accent);
+    color: #060608;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    transition: all 0.2s ease;
+    border: 1px solid var(--accent);
+  }
+  .cta:hover {
+    background: transparent;
+    color: var(--accent);
+    box-shadow: 0 0 24px var(--accent-glow);
+  }
+
+  .hero-meta {
+    margin-top: 48px;
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .hero-meta-item strong {
+    display: block;
+    color: var(--text-hi);
+    font-size: 22px;
+    font-family: var(--sans);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  /* ── Section ──────────────────────────────────────── */
+  section { padding: 72px 0; }
+  section + section { border-top: 1px solid var(--border); }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 700;
+    color: var(--text-hi);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+  }
+  .section-desc {
+    font-size: 16px;
+    color: var(--text);
+    max-width: 680px;
+    margin-bottom: 48px;
+  }
+
+  /* ── 7 Dimensions Grid ────────────────────────────── */
+  .dim-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .dim-card {
+    background: var(--bg);
+    padding: 28px 24px;
+    transition: background 0.2s;
+  }
+  .dim-card:hover { background: var(--bg-alt); }
+  .dim-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    letter-spacing: 0.1em;
+  }
+  .dim-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-hi);
+    margin-bottom: 8px;
+  }
+  .dim-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ── Deliverables ─────────────────────────────────── */
+  .deliverables {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .del-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 24px;
+    transition: border-color 0.2s;
+  }
+  .del-item:hover { border-color: var(--border-hi); }
+  .del-icon {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+    padding: 3px 8px;
+    border: 1px solid var(--border-hi);
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .del-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-hi);
+    margin-bottom: 8px;
+  }
+  .del-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+
+  /* ── Receipt Terminal ─────────────────────────────── */
+  .terminal {
+    background: #0c0c14;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-top: 40px;
+    overflow: hidden;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .terminal-bar {
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .terminal-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .terminal-dot.r { background: #ff5f57; }
+  .terminal-dot.y { background: #febc2e; }
+  .terminal-dot.g { background: #28c840; }
+  .terminal-title {
+    margin-left: 8px;
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+  .terminal-body {
+    padding: 20px 24px;
+    overflow-x: auto;
+  }
+  .terminal-body .ln { color: var(--text-dim); user-select: none; margin-right: 16px; }
+  .terminal-body .k { color: var(--accent); }
+  .terminal-body .s { color: #c3b8f0; }
+  .terminal-body .c { color: var(--text-dim); font-style: italic; }
+  .terminal-body .b { color: var(--text-hi); }
+
+  /* ── Credibility ──────────────────────────────────── */
+  .cred-list {
+    list-style: none;
+  }
+  .cred-list li {
+    display: flex;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .cred-list li:last-child { border-bottom: none; }
+  .cred-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 4px 10px;
+    border-radius: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+  .cred-text {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .cred-text a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .cred-text a:hover { border-bottom-color: var(--accent); }
+  .cred-sub {
+    display: block;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* ── Process ──────────────────────────────────────── */
+  .process {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    position: relative;
+  }
+  .process::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: calc(16.67% + 12px);
+    right: calc(16.67% + 12px);
+    height: 1px;
+    border-top: 1px dashed var(--border);
+    z-index: 0;
+  }
+  .step {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .step-num {
+    width: 48px; height: 48px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-hi);
+    margin-bottom: 8px;
+  }
+  .step-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ── FAQ ──────────────────────────────────────────── */
+  .faq-list {
+    max-width: 720px;
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 0;
+  }
+  .faq-item:first-child { padding-top: 0; }
+  .faq-q {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-hi);
+    margin-bottom: 8px;
+    display: flex;
+    gap: 12px;
+  }
+  .faq-q::before {
+    content: 'Q';
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .faq-a {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.7;
+    padding-left: 28px;
+  }
+
+  /* ── CTA Band ─────────────────────────────────────── */
+  .cta-band {
+    text-align: center;
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+  }
+  .cta-band h2 {
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 700;
+    color: var(--text-hi);
+    margin-bottom: 12px;
+  }
+  .cta-band p {
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    font-size: 15px;
+  }
+
+  /* ── Footer ───────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 0;
+    background: var(--bg-alt);
+  }
+  footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  .footer-brand {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  .footer-brand strong {
+    color: var(--text-hi);
+    display: block;
+    margin-bottom: 4px;
+    font-family: var(--sans);
+    font-size: 14px;
+  }
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    text-align: right;
+  }
+  .footer-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: var(--mono);
+    transition: color 0.15s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ── Badge showcase ───────────────────────────────── */
+  .badges {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+  .badge-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .badge-item span {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .badge-item img {
+    height: 20px;
+    width: auto;
+  }
+
+  /* ── Responsive ───────────────────────────────────── */
+  @media (max-width: 640px) {
+    .hero { padding: 64px 0 56px; }
+    section { padding: 56px 0; }
+    .process {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .process::before { display: none; }
+    .hero-meta { gap: 20px; }
+    .cred-list li { flex-direction: column; gap: 8px; }
+    footer .container { flex-direction: column; }
+    .footer-links { text-align: left; }
+    .topbar-badge { display: none; }
+    .dim-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
-<div class="container">
 
-<div class="badge">116 detection rules · Semantic intent analysis · Proven on production systems</div>
+<!-- ── Top Bar ────────────────────────────────────────── -->
+<nav class="topbar">
+  <div class="container">
+    <div class="brand"><span>Correctover</span> — Runtime Verification</div>
+    <div class="topbar-badge">
+      <span class="pulse-dot"></span>
+      Auditing now
+    </div>
+  </div>
+</nav>
 
-<h1>Your AI agent's output will fail in production.</h1>
-<p class="subtitle">A malformed field. A credential in a code block. A tool response that injects a command. A schema that drifts. These aren't theoretical — they're happening right now in agent systems that look fine in demos.</p>
+<!-- ── Hero ───────────────────────────────────────────── -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-label">Runtime Verification Service</div>
+    <h1>AI Agent Output Audit</h1>
+    <p class="hero-sub">
+      <span class="price">$5,000</span><span class="sep">·</span>5 Days<span class="sep">·</span>Signed Conformance Report
+    </p>
+    <a href="mailto:wangguigui@correctover.com?subject=Agent%20Output%20Audit%20Request" class="cta">Request Audit</a>
 
-<div class="cta-box">
-  <div class="price">$5,000 <span>fixed price · 5 business days</span></div>
-  <p style="color:#888;margin-top:8px">I test your agent's output layer across 7 dimensions with 116 detection rules. You get a report with every issue, reproduction steps, and fixes. All async over email — no meetings.</p>
-  <a class="cta-button" href="mailto:wangguigui@correctover.com?subject=Agent%20Output%20Audit">Start the audit →</a>
-</div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <strong>7</strong>
+        Verification Dimensions
+      </div>
+      <div class="hero-meta-item">
+        <strong>116</strong>
+        Detection Rules
+      </div>
+      <div class="hero-meta-item">
+        <strong>8+</strong>
+        Conformance Vectors
+      </div>
+      <div class="hero-meta-item">
+        <strong>Ed25519</strong>
+        Signed Receipt
+      </div>
+    </div>
+  </div>
+</header>
 
-<div class="section">
-<h2>What I test</h2>
+<!-- ── What Is It ─────────────────────────────────────── -->
+<section id="what">
+  <div class="container">
+    <div class="section-label">01 / Overview</div>
+    <h2 class="section-title">What is an Agent Output Audit?</h2>
+    <p class="section-desc">
+      When your AI agent calls tools, executes code, or accesses databases, how do you know its output is safe, compliant, and untampered? We audit your agent runtime against the CCS (Correctover Conformance Shape) 7-dimension verification framework.
+    </p>
 
-<div class="dim-box">
-<h3>Structure & Schema</h3>
-<p>Every output path that can break downstream parsers — malformed JSON, missing fields, type mismatches, enum drift, nested object errors. Tested across normal, edge-case, and adversarial inputs.</p>
-</div>
+    <div class="dim-grid">
+      <div class="dim-card">
+        <div class="dim-num">DIM 01</div>
+        <div class="dim-name">Structure</div>
+        <div class="dim-desc">Output format validity — well-formed JSON, correct encodings, protocol-level conformance.</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-num">DIM 02</div>
+        <div class="dim-name">Schema</div>
+        <div class="dim-desc">Field-level validation against declared contracts — types, constraints, required fields.</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-num">DIM 03</div>
+        <div class="dim-name">Latency</div>
+        <div class="dim-desc">Response time within expected bounds — detects stalls, regressions, and timing anomalies.</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-num">DIM 04</div>
+        <div class="dim-name">Cost</div>
+        <div class="dim-desc">Token and API consumption analysis — flags abnormal spend patterns and resource leaks.</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-num">DIM 05</div>
+        <div class="dim-name">Identity</div>
+        <div class="dim-desc">Caller authentication and authorization verification — ensures provenance is intact.</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-num">DIM 06</div>
+        <div class="dim-name">Integrity</div>
+        <div class="dim-desc">Output tamper detection via hash binding and Ed25519 signature chains.</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-num">DIM 07</div>
+        <div class="dim-name">Security</div>
+        <div class="dim-desc">Injection payloads, credential leakage, privilege escalation — deep content inspection.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="dim-box">
-<h3>Security</h3>
-<p>Credential leakage in outputs (AWS/GCP/Azure/SSH tokens in code blocks), prompt injection through tool responses, unsafe content pass-through, command injection vectors. <span class="highlight">Not keyword matching — semantic intent analysis</span> that traces whether <span class="code">exec()</span> is sandboxed, whether dictionary keys are constant, whether a code path is a legitimate engine or an exploit.</p>
-</div>
+<!-- ── Deliverables ───────────────────────────────────── -->
+<section id="deliverables">
+  <div class="container">
+    <div class="section-label">02 / Deliverables</div>
+    <h2 class="section-title">What You Receive</h2>
+    <p class="section-desc">Every audit produces a complete, verifiable evidence package — not just a checklist.</p>
 
-<div class="dim-box">
-<h3>Identity & Integrity</h3>
-<p>Agent spoofing, unverified tool call sources, missing identity attestation, output tampering, response injection. If your agent can't prove who it is and that its output wasn't modified, it can't be trusted with production systems.</p>
-</div>
+    <div class="deliverables">
+      <div class="del-item">
+        <div class="del-icon">RECEIPT</div>
+        <div class="del-title">CCS Conformance Receipt</div>
+        <div class="del-desc">Ed25519-signed, machine-readable, verifiable offline. Contains dimension scores, vector results, and a cryptographic binding to your agent artifact.</div>
+      </div>
+      <div class="del-item">
+        <div class="del-icon">REPORT</div>
+        <div class="del-title">Vulnerability Report</div>
+        <div class="del-desc">Full findings from 116 proprietary detection rules across all 7 dimensions, with evidence traces and reproduction steps.</div>
+      </div>
+      <div class="del-item">
+        <div class="del-icon">FIXES</div>
+        <div class="del-title">Remediation Guidance</div>
+        <div class="del-desc">Prioritized fix recommendations sorted by severity (Critical / High / Medium / Low), with code-level references where applicable.</div>
+      </div>
+      <div class="del-item">
+        <div class="del-icon">VECTORS</div>
+        <div class="del-title">Conformance Vector Results</div>
+        <div class="del-desc">8+ test cases executed against your agent. Each result is independently reproducible with the open-source checker — zero CCS code imports required.</div>
+      </div>
+      <div class="del-item">
+        <div class="del-icon">TIMELINE</div>
+        <div class="del-title">5-Day Turnaround</div>
+        <div class="del-desc">From submission to signed report. Findings are delivered as they are confirmed; the final package arrives on or before day 5.</div>
+      </div>
+    </div>
 
-<div class="dim-box">
-<h3>Latency & Cost</h3>
-<p>P50/P99 outliers under load, unbounded response times, token explosion on long contexts, loop amplification, budget breach paths. Agents that work in demos can cost 10x expected in production.</p>
-</div>
-</div>
+    <!-- Terminal preview -->
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="terminal-dot r"></span>
+        <span class="terminal-dot y"></span>
+        <span class="terminal-dot g"></span>
+        <span class="terminal-title">ccs-receipt verify</span>
+      </div>
+      <div class="terminal-body">
+<span class="ln">01</span><span class="c">$ ccs-verify --receipt receipt.json --pubkey correctover.pub</span>
+<span class="ln">02</span>
+<span class="ln">03</span><span class="k">CCS Conformance Receipt</span>  <span class="c">// draft-correctover-ccs-08</span>
+<span class="ln">04</span><span class="b">receipt_id:</span>       <span class="s">ccs-rct-7f3a9c2e</span>
+<span class="ln">05</span><span class="b">agent_ref:</span>       <span class="s">sha256:4b1d...e8a2</span>
+<span class="ln">06</span><span class="b">issued:</span>          <span class="s">2025-01-15T09:42:00Z</span>
+<span class="ln">07</span><span class="b">dimensions:</span>
+<span class="ln">08</span>  <span class="b">structure:</span>    <span class="k">PASS</span>  <span class="c">// 12/12 checks</span>
+<span class="ln">09</span>  <span class="b">schema:</span>       <span class="k">PASS</span>  <span class="c">// 18/18 checks</span>
+<span class="ln">10</span>  <span class="b">latency:</span>      <span class="k">PASS</span>  <span class="c">// p99=412ms (bound: 500ms)</span>
+<span class="ln">11</span>  <span class="b">cost:</span>         <span class="k">PASS</span>  <span class="c">// $0.0031/call (bound: $0.01)</span>
+<span class="ln">12</span>  <span class="b">identity:</span>     <span class="k">PASS</span>  <span class="c">// mTLS + JWT verified</span>
+<span class="ln">13</span>  <span class="b">integrity:</span>    <span class="k">PASS</span>  <span class="c">// Ed25519 signature valid</span>
+<span class="ln">14</span>  <span class="b">security:</span>     <span class="k">WARN</span>  <span class="c">// 2 medium findings (see report)</span>
+<span class="ln">15</span>
+<span class="ln">16</span><span class="b">vectors_passed:</span>  <span class="s">8/8</span>
+<span class="ln">17</span><span class="b">signature:</span>       <span class="s">3f8a1c...d2b4</span>
+<span class="ln">18</span>
+<span class="ln">19</span><span class="c">Verification: OK (200 OK in 0.03s)</span>
+      </div>
+    </div>
 
-<div class="section">
-<h2>Why this isn't a checklist</h2>
-<p style="color:#aaa;margin-bottom:16px">Anyone can read a public standard and build a checkbox. What you're paying for:</p>
-<ul>
-<li><strong>116 detection rules</strong> — 106 CCS runtime rules + 10 MCP protocol rules, built from real-world analysis of agent frameworks. These aren't in any public document.</li>
-<li><strong>Semantic intent engine</strong> — doesn't match keywords, understands code intent. Traced <span class="code">exec()</span> through 5 layers of analysis (isDictKeyConstant → isSandboxedExec → isCodeExecutionEngine → isSafeEvalPattern → CRITICAL) on production codebases. Reduced 27 false positives to 0 on the AgenticX test suite.</li>
-<li><strong>Proven on real systems</strong> — verified vulnerabilities in production AI infrastructure (including mcp-remote CVE-2025-6514, CVSS 9.6), merged security contributions into EMILIA and CrewAI, 14,560 validated executions in an independent study.</li>
-<li><strong>Independent</strong> — I don't sell a platform, don't push a product, don't have a quota. I deliver findings.</li>
-</ul>
-</div>
+    <!-- Badges -->
+    <div class="badges">
+      <div class="badge-item">
+        <span>Verified badge</span>
+        <img src="ccs-conformance-verified.svg" alt="CCS Conformance Verified v1.4.0">
+      </div>
+      <div class="badge-item">
+        <span>Self-attested badge</span>
+        <img src="ccs-conformance-self-attested.svg" alt="CCS Conformance Self-Attested v1.4.0">
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="section">
-<h2>What you get</h2>
-<ul>
-<li><strong>Audit Report (PDF)</strong> — Every finding with severity (Critical/High/Medium/Low), reproduction steps, and specific fixes with code examples</li>
-<li><strong>Verification profile</strong> — A ready-to-run configuration for your agent's expected output shape, usable in CI/CD</li>
-<li><strong>30-day email follow-up</strong> — One round of questions after you review the report</li>
-</ul>
-</div>
+<!-- ── Credibility ────────────────────────────────────── -->
+<section id="credibility">
+  <div class="container">
+    <div class="section-label">03 / Technical Basis</div>
+    <h2 class="section-title">Built on Published Standards</h2>
+    <p class="section-desc">The CCS framework is documented in open specifications and validated through independent integration.</p>
 
-<div class="section">
-<h2>Process</h2>
-<div class="process-step">
-  <div class="step-num">1</div>
-  <div class="step-content">
-    <h3>Day 1 — Scope</h3>
-    <p>You send sample agent outputs, tool definitions, and expected schemas. Or I test against your staging endpoint.</p>
+    <ul class="cred-list">
+      <li>
+        <span class="cred-tag">IETF</span>
+        <div class="cred-text">
+          Internet-Draft: <a href="https://datatracker.ietf.org/doc/draft-correctover-ccs/" target="_blank" rel="noopener">draft-correctover-ccs-08</a>
+          <span class="cred-sub">Formal specification of the Correctover Conformance Shape, version 08.</span>
+        </div>
+      </li>
+      <li>
+        <span class="cred-tag">PRIOR ART</span>
+        <div class="cred-text">
+          20 DOIs establishing prior art
+          <span class="cred-sub">Peer-reviewed references spanning runtime verification, provenance attestation, and signed software supply chains.</span>
+        </div>
+      </li>
+      <li>
+        <span class="cred-tag">PRODUCTION</span>
+        <div class="cred-text">
+          EMILIA Protocol integration — 167 tests passing
+          <span class="cred-sub">CCS conformance checks run in production CI on the EMILIA protocol stack.</span>
+        </div>
+      </li>
+      <li>
+        <span class="cred-tag">CROSSWALK</span>
+        <div class="cred-text">
+          RootSign / Providex crosswalk
+          <span class="cred-sub">Mapping between CCS dimensions and existing attestation frameworks for interoperability.</span>
+        </div>
+      </li>
+      <li>
+        <span class="cred-tag">INDEPENDENT</span>
+        <div class="cred-text">
+          AgenTrust independent verification — 10/10
+          <span class="cred-text">
+            <span class="cred-sub">Third-party evaluation of the CCS checker implementation and conformance vector suite.</span>
+          </span>
+        </div>
+      </li>
+      <li>
+        <span class="cred-tag">OPEN</span>
+        <div class="cred-text">
+          Conformance vectors on <a href="https://github.com/DSHCorrectover/ccs-conformance-vectors" target="_blank" rel="noopener">GitHub</a>
+          <span class="cred-sub">All test vectors and expected results are public. The independent checker imports zero CCS code — anyone can reproduce results.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── Process ────────────────────────────────────────── -->
+<section id="process">
+  <div class="container">
+    <div class="section-label">04 / Process</div>
+    <h2 class="section-title">Three Steps, Five Days</h2>
+    <p class="section-desc">No production access required. The audit can run against a staging endpoint or submitted trace logs.</p>
+
+    <div class="process">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-name">Submit</div>
+        <div class="step-desc">Send us your agent endpoint, code repository, or trace log export. We scope the audit and confirm coverage.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-name">Audit</div>
+        <div class="step-desc">We execute the 7-dimension framework with all 116 rules and 8+ conformance vectors against your agent runtime.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-name">Report</div>
+        <div class="step-desc">Receive your Ed25519-signed receipt, full vulnerability report, and prioritized remediation guidance.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────────────────── -->
+<section id="faq">
+  <div class="container">
+    <div class="section-label">05 / FAQ</div>
+    <h2 class="section-title">Common Questions</h2>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Do you need production access?</div>
+        <div class="faq-a">No. We can audit a staging environment or work from exported trace logs. If you prefer to run conformance vectors yourself, we provide the independent checker and review the output.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Which agent frameworks are supported?</div>
+        <div class="faq-a">Framework-agnostic. Pydantic AI, CrewAI, AutoGen, LangChain, OpenAI Agents SDK, and custom stacks can all be audited. The CCS dimensions target runtime behavior rather than framework internals.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What format is the report?</div>
+        <div class="faq-a">JSON and PDF. The JSON contains the machine-readable CCS receipt with signature and vector results. The PDF provides the human-readable analysis, findings, and remediation guidance.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What about follow-up support?</div>
+        <div class="faq-a">30 days of free Q&amp;A support after delivery. For ongoing assurance, a continuous monitoring retainer is available — ask for details when submitting your request.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA Band ───────────────────────────────────────── -->
+<div class="cta-band">
+  <div class="container">
+    <h2>Ready to audit your agent?</h2>
+    <p>Send us your endpoint or repository. We will confirm scope within 24 hours.</p>
+    <a href="mailto:wangguigui@correctover.com?subject=Agent%20Output%20Audit%20Request" class="cta">Request Audit</a>
   </div>
 </div>
-<div class="process-step">
-  <div class="step-num">2</div>
-  <div class="step-content">
-    <h3>Days 2–4 — Deep verification</h3>
-    <p>116 rules across all 7 dimensions, including adversarial inputs, edge cases, and semantic code path analysis.</p>
+
+<!-- ── Footer ─────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-brand">
+      <strong>Guigui Wang, Correctover</strong>
+      Runtime Verification for Agent Systems<br>
+      <a href="https://correctover.com" style="color:var(--text-dim);text-decoration:none;">https://correctover.com</a>
+    </div>
+    <div class="footer-links">
+      <a href="https://datatracker.ietf.org/doc/draft-correctover-ccs/" target="_blank" rel="noopener">IETF draft-correctover-ccs-08</a>
+      <a href="https://github.com/DSHCorrectover/ccs-conformance-vectors" target="_blank" rel="noopener">github.com/DSHCorrectover</a>
+      <a href="mailto:wangguigui@correctover.com">wangguigui@correctover.com</a>
+    </div>
   </div>
-</div>
-<div class="process-step">
-  <div class="step-num">3</div>
-  <div class="step-content">
-    <h3>Day 5 — Delivery</h3>
-    <p>Full report with findings, fixes, and verification profile.</p>
-  </div>
-</div>
-</div>
+</footer>
 
-<div class="author">
-  <strong>Guigui Wang</strong> — Correctover
-  <p>I build runtime verification for AI agent systems. My verification engine (<span class="code">ccs-verifier</span> on PyPI) runs at sub-millisecond latency (P50 &lt;10µs) and has been integrated into production agent frameworks. I've contributed security fixes to EMILIA (PR merged) and CrewAI (PR open). The underlying conformance framework is documented in an IETF Internet-Draft, but the 116 rules and semantic analysis engine are proprietary — built from testing real systems, not from reading specifications.</p>
-</div>
-
-<div class="footer">
-  Correctover — Runtime Verification for Agent Systems<br>
-  <a href="https://correctover.com">correctover.com</a> · <a href="mailto:wangguigui@correctover.com">wangguigui@correctover.com</a>
-</div>
-
-</div>
 </body>
 </html>
-<!-- deployment marker 20260826112754 -->
