@@ -547,6 +547,21 @@
     .dim-grid { grid-template-columns: 1fr; }
   }
 </style>
+<style>
+/* ── Free scan summary lead capture ─────────────────── */
+.lead-cta { padding: 60px 0; background: linear-gradient(180deg, rgba(255,92,57,.10), rgba(255,92,57,0)); }
+.lead-card { max-width: 840px; margin: 0 auto; text-align: center; border: 1px solid var(--accent, #ff5c39); border-radius: 16px; padding: 46px 38px; background: var(--card, rgba(255,255,255,.03)); box-shadow: 0 0 48px rgba(255,92,57,.18); }
+.lead-eyebrow { display: inline-block; font-size: .76rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent, #ff5c39); border: 1px solid var(--accent, #ff5c39); border-radius: 999px; padding: 5px 16px; margin-bottom: 20px; }
+.lead-card h2 { margin: 0 0 14px; font-size: 2.05rem; line-height: 1.25; }
+.lead-sub { color: var(--text-dim, #9a9a9a); max-width: 640px; margin: 0 auto 26px; line-height: 1.75; }
+.lead-points { list-style: none; padding: 0; margin: 0 auto 30px; max-width: 660px; text-align: left; display: grid; gap: 13px; }
+.lead-points li { padding-left: 28px; position: relative; line-height: 1.65; color: var(--text-dim, #9a9a9a); }
+.lead-points li::before { content: "\2713"; position: absolute; left: 0; top: 0; color: var(--accent, #ff5c39); font-weight: 700; }
+.lead-points strong { color: var(--text, #f2f2f2); }
+a.lead-btn { display: inline-block; font-size: 1.08rem; font-weight: 700; padding: 15px 38px; }
+.lead-note { margin: 20px 0 0; font-size: .86rem; color: var(--text-dim, #9a9a9a); }
+@media (max-width: 640px) { .lead-card { padding: 34px 20px; } .lead-card h2 { font-size: 1.55rem; } }
+</style>
 </head>
 <body>
 
@@ -567,7 +582,7 @@
     <div class="hero-label">Runtime Verification Service</div>
     <h1>AI Agent Output Audit</h1>
     <p class="hero-sub">
-      <span class="price">$5,000</span><span class="sep">·</span>5 Days<span class="sep">·</span>Signed Conformance Report
+      5 Days<span class="sep">·</span>Signed Conformance Report
     </p>
     <a href="mailto:wangguigui@correctover.com?subject=Agent%20Output%20Audit%20Request" class="cta">Request Audit</a>
 
@@ -591,6 +606,26 @@
     </div>
   </div>
 </header>
+
+<!-- ── Free Scan Summary (Lead Capture) ──────────────── -->
+<section id="free-scan" class="lead-cta">
+  <div class="container">
+    <div class="lead-card">
+      <div class="lead-eyebrow">Free · No obligation</div>
+      <h2>Get a free 1-page scan summary</h2>
+      <p class="lead-sub">Send us your agent endpoint, repository, or an exported trace log. You get back a concise, human-readable summary of what an automated surface scan finds — and where a manual Correctover audit would dig deeper.</p>
+      <ul class="lead-points">
+        <li><strong>116 semantic intent rules</strong> — analysis beyond signature matching: tool-call intent, prompt-injection paths, privilege and permission misuse, and output-tampering patterns.</li>
+        <li><strong>5-day turnaround</strong> — from submission to delivered findings, with issues reported as they are confirmed.</li>
+        <li><strong>PDF report with concrete fixes</strong> — prioritized findings with code-level remediation guidance, not just a checklist.</li>
+        <li><strong>Findings grounded in real MCP ecosystem CVEs</strong> — every flagged issue maps to disclosed vulnerability classes observed in the Model Context Protocol ecosystem.</li>
+        <li><strong>First customers: no-critical-no-pay</strong> — if the manual audit finds no critical-severity issue in your agent, you pay nothing.</li>
+      </ul>
+      <a class="cta lead-btn" href="mailto:234114134@coze.email?subject=Free%20audit%20scan%20summary">Get my free scan summary →</a>
+      <p class="lead-note">Correctover — AI Reliability</p>
+    </div>
+  </div>
+</section>
 
 <!-- ── What Is It ─────────────────────────────────────── -->
 <section id="what">
@@ -687,7 +722,7 @@
       <div class="terminal-body">
 <span class="ln">01</span><span class="c">$ ccs-verify --receipt receipt.json --pubkey correctover.pub</span>
 <span class="ln">02</span>
-<span class="ln">03</span><span class="k">CCS Conformance Receipt</span>  <span class="c">// draft-correctover-ccs-08</span>
+<span class="ln">03</span><span class="k">CCS Conformance Receipt</span>  <span class="c">// CCS spec · Zenodo DOI 10.5281/zenodo.21234580</span>
 <span class="ln">04</span><span class="b">receipt_id:</span>       <span class="s">ccs-rct-7f3a9c2e</span>
 <span class="ln">05</span><span class="b">agent_ref:</span>       <span class="s">sha256:4b1d...e8a2</span>
 <span class="ln">06</span><span class="b">issued:</span>          <span class="s">2025-01-15T09:42:00Z</span>
@@ -695,7 +730,7 @@
 <span class="ln">08</span>  <span class="b">structure:</span>    <span class="k">PASS</span>  <span class="c">// 12/12 checks</span>
 <span class="ln">09</span>  <span class="b">schema:</span>       <span class="k">PASS</span>  <span class="c">// 18/18 checks</span>
 <span class="ln">10</span>  <span class="b">latency:</span>      <span class="k">PASS</span>  <span class="c">// p99=412ms (bound: 500ms)</span>
-<span class="ln">11</span>  <span class="b">cost:</span>         <span class="k">PASS</span>  <span class="c">// $0.0031/call (bound: $0.01)</span>
+<span class="ln">11</span>  <span class="b">cost:</span>         <span class="k">PASS</span>  <span class="c">// 0.0031 per call (bound: 0.01)</span>
 <span class="ln">12</span>  <span class="b">identity:</span>     <span class="k">PASS</span>  <span class="c">// mTLS + JWT verified</span>
 <span class="ln">13</span>  <span class="b">integrity:</span>    <span class="k">PASS</span>  <span class="c">// Ed25519 signature valid</span>
 <span class="ln">14</span>  <span class="b">security:</span>     <span class="k">WARN</span>  <span class="c">// 2 medium findings (see report)</span>
@@ -730,10 +765,10 @@
 
     <ul class="cred-list">
       <li>
-        <span class="cred-tag">IETF</span>
+        <span class="cred-tag">ZENODO</span>
         <div class="cred-text">
-          Internet-Draft: <a href="https://datatracker.ietf.org/doc/draft-correctover-ccs/" target="_blank" rel="noopener">draft-correctover-ccs-08</a>
-          <span class="cred-sub">Formal specification of the Correctover Conformance Shape, version 08.</span>
+          Published specification: <a href="https://doi.org/10.5281/zenodo.21234580" target="_blank" rel="noopener">10.5281/zenodo.21234580</a>
+          <span class="cred-sub">Archived specification of the Correctover Conformance Shape framework — a persistent, citable record on Zenodo.</span>
         </div>
       </li>
       <li>
@@ -849,7 +884,7 @@
       <a href="https://correctover.com" style="color:var(--text-dim);text-decoration:none;">https://correctover.com</a>
     </div>
     <div class="footer-links">
-      <a href="https://datatracker.ietf.org/doc/draft-correctover-ccs/" target="_blank" rel="noopener">IETF draft-correctover-ccs-08</a>
+      <a href="https://doi.org/10.5281/zenodo.21234580" target="_blank" rel="noopener">CCS specification · Zenodo DOI 10.5281/zenodo.21234580</a>
       <a href="https://github.com/DSHCorrectover/ccs-conformance-vectors" target="_blank" rel="noopener">github.com/DSHCorrectover</a>
       <a href="mailto:wangguigui@correctover.com">wangguigui@correctover.com</a>
     </div>
