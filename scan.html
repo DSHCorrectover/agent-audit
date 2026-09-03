@@ -66,7 +66,8 @@ footer a{color:var(--accent);text-decoration:none}
   <div class="brand">Correctover <span>· AI Reliability™ — Agent Runtime Assurance</span></div>
   <h1>Free AI Agent Security Scanner</h1>
   <p class="lede">Scan an <strong>MCP configuration</strong> or an entire <strong>agent codebase / npm package</strong> for critical security patterns — hardcoded secrets, plaintext endpoints, SSRF/metadata access, shell injection, dynamic eval, missing permission gates, timeouts and kill switches. Findings map to <strong>OWASP AISVS 1.0</strong>.</p>
-  <div class="privacy">🔒 Runs 100% in your browser — your files never leave your machine. No upload, no account, no telemetry.</div>
+  <div class="privacy">🔒 Runs 100% in your browser — your files never leave your machine. No upload, no account, no telemetry. Safe for closed-source and unreleased code.</div>
+  <p style="color:var(--muted);font-size:13px;margin-top:12px">The automated scan is a free signal check, not an audit or certification — see the notice in every report. OWASP® and AISVS are trademarks of the OWASP Foundation; Correctover is not affiliated with or endorsed by OWASP.</p>
 
   <div class="tabs">
     <div class="tab active" data-tab="config">① MCP config scan<small>paste JSON / .mcp.json</small></div>
@@ -112,17 +113,26 @@ footer a{color:var(--accent);text-decoration:none}
       <h2 id="leadTitle">Your report is ready.</h2>
       <p id="leadSub"></p>
       <div class="leadrow">
-        <input type="email" id="leadEmail" placeholder="you@company.com — get the full 116-check interpretation of these findings">
-        <button class="btn ok" id="btnLead">Email me the deep interpretation →</button>
+        <input type="email" id="leadEmail" placeholder="you@company.com">
+        <button class="btn ok" id="btnLead">Request the enterprise pack →</button>
       </div>
-      <div class="leadfine">What happens next: your email opens with a <strong>pre-filled summary of your own results</strong> (target, score, counts). We reply within one business day with how each finding maps to the <strong>116-check manual audit methodology</strong> — reachability, exploit paths, prioritized fixes. No spam, no mailing list. Or <a href="#" id="dlReport">download the report</a> / <a href="#" id="viewReport">view it in a new tab</a> without leaving an email.</div>
-      <div class="altlead">Shipping this for real? <a href="https://dshcorrectover.github.io/agent-audit/">Learn about the 5-day manual deep audit — if we find no critical-severity issue, you pay nothing.</a></div>
+      <div class="leadfine">
+        <strong>Free report, no gate:</strong> <a href="#" id="dlReport">download</a> or <a href="#" id="viewReport">open in a new tab</a> the full findings, or use the <strong>🖨 Print / Save as PDF</strong> button in the report — no email needed.
+        <br><br>
+        <strong>Shipping for a vendor, client, or compliance review?</strong> Leave a work email and we reply with the three artifacts this automated scan cannot produce:
+        <br>① <strong>Officially delivered report</strong> from a manual deep audit under a signed engagement (the printable free report is a signal check, <em>not</em> a certification — it must not be filed as vendor-acceptance evidence);
+        <br>② <strong>AISVS mapping workbook</strong> — how each finding maps to OWASP AISVS 1.0 control families, with the chapters this scanner does not cover (training data, model lifecycle, adversarial robustness, human oversight);
+        <br>③ <strong>Version-provenance setup guide</strong> — signed manifests anchored to the Sigstore Rekor transparency log for tamper-evident release records (anchor proves existence of a snapshot, not safety).
+        <br><br>No spam, no mailing list — one human reply, usually within one business day.
+      </div>
+      <div class="altlead" id="enterprise">Prefer the fixed-scope engagement? <a href="https://dshcorrectover.github.io/agent-audit/">The 5-day manual deep audit: if we find no critical-severity issue, you pay nothing.</a></div>
     </div>
     <div class="note" id="scopeNote"></div>
   </div>
 
   <footer>
     Powered by the same engine as <strong>correctover-scan</strong> (<code style="font-family:var(--mono)">npx correctover-scan</code>) · static analysis, entirely local ·
+    <a href="aisvs-mapping.html">AISVS 1.0 coverage map</a> ·
     <a href="https://correctover.com">correctover.com</a> ·
     <a href="https://github.com/DSHCorrectover">github.com/DSHCorrectover</a> ·
     <a href="https://github.com/DSHCorrectover/correctover-scan-action">scan on every push (GitHub Action)</a>
@@ -263,18 +273,23 @@ footer a{color:var(--accent);text-decoration:none}
     const body = [
       'Hi Correctover team,',
       '',
-      'I just ran the free in-browser scanner (https://dshcorrectover.github.io/agent-audit/scan.html).',
+      'I just ran the free in-browser scanner (https://dshcorrectover.github.io/agent-audit/scan.html) and would like the enterprise pack for these results.',
       '',
       'My contact email: ' + email,
       'Target type: ' + lastTarget,
       'Result summary: ' + title,
       sub,
       '',
-      'Please send me how these findings map to the 116-check manual audit methodology (reachability, exploit paths, prioritized fixes).',
+      'I am interested in (please reply with details):',
+      '1. Officially delivered report from a manual deep audit under a signed engagement (vendor/client acceptance)',
+      '2. AISVS mapping workbook (findings mapped to OWASP AISVS 1.0 control families)',
+      '3. Version-provenance setup guide (signed manifests anchored to Sigstore Rekor)',
+      '',
+      'A bit about our use case (optional): ',
       '',
       'Thanks',
     ].join('\n');
-    const url = 'mailto:wangguigui@correctover.com?subject=' + encodeURIComponent('[Free Scan] 116-check interpretation request — ' + lastTarget) + '&body=' + encodeURIComponent(body);
+    const url = 'mailto:wangguigui@correctover.com?subject=' + encodeURIComponent('[Free Scan] enterprise pack request — ' + lastTarget) + '&body=' + encodeURIComponent(body);
     window.location.href = url;
   });
 })();
