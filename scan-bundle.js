@@ -1252,8 +1252,35 @@ function formatHTMLReport(opts) {
   details{margin-top:8px}summary{cursor:pointer;color:var(--muted);font-size:13px}
   .pass-list{font-size:13px;color:var(--muted);columns:2;margin-top:10px}
   .pass-list div{break-inside:avoid;padding:2px 0}
+  .gateway{background:rgba(79,124,255,.08);border:1px solid var(--accent);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:14px}
+  .gateway a{color:var(--accent);font-weight:700;text-decoration:none;white-space:nowrap}
+  .disclaimer{background:rgba(240,185,85,.06);border:1px solid rgba(240,185,85,.4);border-radius:12px;padding:18px 20px;margin:22px 0;font-size:12.5px;color:var(--muted)}
+  .disclaimer h2{font-size:14px;color:var(--warn);border:none;margin:0 0 10px;padding:0}
+  .disclaimer p{margin-bottom:8px}
+  .disclaimer p:last-child{margin-bottom:0}
+  .disclaimer strong{color:var(--text)}
+  .printbtn{position:fixed;top:14px;right:14px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35);z-index:10}
+  @media print{
+    :root{--bg:#ffffff;--card:#ffffff;--line:#bbbbbb;--text:#111111;--muted:#333333;--accent:#0a4dd6;--ok:#0a7a52;--warn:#8a6100;--bad:#b32020}
+    body{background:#fff;padding:0}
+    .printbtn{display:none !important}
+    .hero,.finding,.note,.gateway,.disclaimer,.next .card2{break-inside:avoid}
+    .disclaimer{background:#fffbe8 !important;border-color:#999 !important;color:#000 !important}
+    .disclaimer h2{color:#000 !important}.disclaimer strong{color:#000 !important}
+    .f-snip{background:#f6f6f6 !important;color:#111 !important}
+    code{background:#f0f0f0 !important}
+    .next a{text-decoration:none}
+  }
 </style></head>
 <body><div class="wrap">
+
+  <button class="printbtn" onclick="window.print()">🖨 Print / Save as PDF</button>
+
+  <div class="gateway">
+    This automated scan maps surface patterns to <strong>OWASP AISVS 1.0</strong> controls — it is not a certification or an audit opinion.
+    Need an <strong>official compliance report for vendor acceptance</strong>, an AISVS mapping workbook, or signed version-provenance records?
+    👉 <a href="https://dshcorrectover.github.io/agent-audit/scan.html#enterprise">Enterprise report &amp; provenance options (official entry)</a>
+  </div>
 
   <div class="hero">
     <div class="brand">Correctover <span>· AI Reliability™ — Agent Runtime Assurance</span></div>
@@ -1285,6 +1312,15 @@ function formatHTMLReport(opts) {
     It locates risk-bearing patterns with file/line locations; it does not execute code, prove reachability or
     exploitability, or judge semantic intent. Fail/warn items are the input for manual deep review, not a verdict
     of compromise. Nothing in this scan leaves your machine — no network calls, no telemetry.
+  </div>
+
+  <div class="disclaimer">
+    <h2>⚠ Important notice — read before sharing or filing this report</h2>
+    <p><strong>1. Not an audit, certification, or compliance attestation.</strong> This document is output of an automated static signal scan (${esc(checksLabel)}). It is <strong>not</strong> a security audit, penetration test, certification, or statement of compliance with any standard or regulation. A score of 100 or the absence of critical findings does <strong>not</strong> mean the code is vulnerability-free, secure, or compliant — it means only that the listed patterns were not detected in the scanned snapshot. Static analysis cannot prove the absence of reachable vulnerabilities; semantic intent, reachability, exploitability, and runtime behavior are not determined.</p>
+    <p><strong>2. AISVS mapping is navigational only.</strong> OWASP® and AISVS are trademarks of the OWASP Foundation. Correctover is not affiliated with or endorsed by OWASP. References such as <code>C10.1</code> are our own mapping of checks to control families in OWASP AISVS v1.0 (June 2026), provided as a navigation aid; OWASP does not certify products or vendors, and this report must not be presented as an OWASP or AISVS certification.</p>
+    <p><strong>3. Not a substitute for professional review.</strong> Do not rely on this document as the sole basis for acceptance, procurement, release, insurance, regulatory, or other consequential decisions. High-assurance use cases require an engagement performed by qualified personnel under an agreed scope and terms (such as Correctover's 116-check manual deep audit, delivered under a signed agreement).</p>
+    <p><strong>4. Transparency-log anchors prove existence, not safety.</strong> Sigstore Rekor entries and any content-addressed manifest attest only that a byte-for-byte snapshot existed at a point in time. They make no statement about code safety, quality, ownership, or legal rights.</p>
+    <p><strong>5. AS-IS.</strong> The scan and report are provided "as is", without warranty of any kind, express or implied, including merchantability or fitness for a particular purpose. To the maximum extent permitted by law, Correctover shall not be liable for any damages arising from their use. You are responsible for independently verifying findings before acting on them. Automated results may include false positives and false negatives.</p>
   </div>
 
   <h2>Go further</h2>
