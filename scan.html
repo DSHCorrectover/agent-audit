@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free AI Agent Security Scanner — runs in your browser · Correctover</title>
+<meta name="description" content="Free online security scanner for MCP configs and AI agent codebases. Runs 100% in your browser — nothing is uploaded, no account, no telemetry. Get an instant shareable report mapped to OWASP AISVS 1.0.">
+<meta name="keywords" content="MCP security scanner, AI agent security, OWASP AISVS, agent security scan, MCP config audit, supply chain security, free security scanner, correctover">
+<link rel="canonical" href="https://dshcorrectover.github.io/agent-audit/scan.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free AI Agent Security Scanner — runs 100% in your browser">
+<meta property="og:description" content="Scan MCP configs and agent codebases for critical security patterns. Nothing is uploaded. Instant shareable report.">
+<meta property="og:url" content="https://dshcorrectover.github.io/agent-audit/scan.html">
+<meta property="og:site_name" content="Correctover">
+<meta name="twitter:card" content="summary">
+<style>
+:root{--bg:#0b1020;--card:#141d38;--line:#263156;--text:#e8ecf8;--muted:#9aa7c7;--accent:#4f7cff;--ok:#37d0a0;--warn:#f0b955;--bad:#ff5d5d;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.wrap{max-width:920px;margin:0 auto;padding:36px 18px 80px}
+.brand{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.brand span{color:var(--muted);font-weight:400;letter-spacing:.05em;text-transform:none}
+h1{font-size:30px;margin:12px 0 8px;line-height:1.25}
+.lede{color:var(--muted);font-size:16px;max-width:680px}
+.privacy{display:inline-flex;align-items:center;gap:8px;background:rgba(55,208,160,.1);border:1px solid rgba(55,208,160,.35);color:var(--ok);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;margin-top:14px}
+.tabs{display:flex;gap:10px;margin:28px 0 0}
+.tab{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px 12px 0 0;padding:14px 18px;cursor:pointer;color:var(--muted);font-size:15px;font-weight:600;text-align:center;transition:all .15s}
+.tab.active{color:var(--text);border-color:var(--accent);border-bottom-color:transparent;background:#101736}
+.tab small{display:block;font-weight:400;font-size:12px;margin-top:2px}
+.panel{background:#101736;border:1px solid var(--accent);border-radius:0 0 14px 14px;padding:22px;display:none}
+.panel.active{display:block}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:34px 20px;text-align:center;color:var(--muted);cursor:pointer;transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--accent);background:rgba(79,124,255,.06)}
+.drop strong{color:var(--text)}
+.drop .hint{font-size:13px;margin-top:8px}
+textarea{width:100%;min-height:200px;background:#080d1f;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:14px;font-family:var(--mono);font-size:13px;resize:vertical}
+textarea:focus{outline:none;border-color:var(--accent)}
+.btn{display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;transition:transform .1s,opacity .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.btn.ok{background:var(--ok);color:#0b1020}
+.filestatus{margin-top:12px;font-size:13px;color:var(--muted);font-family:var(--mono)}
+.err{background:rgba(255,93,93,.1);border:1px solid rgba(255,93,93,.4);color:#ffb0b0;border-radius:10px;padding:12px 14px;margin-top:14px;font-size:14px;display:none}
+#results{margin-top:34px;display:none}
+.leadbox{background:linear-gradient(135deg,#16203f,#101736);border:1px solid var(--line);border-radius:16px;padding:26px 28px}
+.leadbox h2{font-size:20px;margin-bottom:6px}
+.leadbox p{color:var(--muted);font-size:14px;margin-bottom:16px}
+.leadrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.leadrow input[type=email]{flex:1;min-width:240px;background:#080d1f;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:12px 14px;font-size:14px}
+.leadrow input:focus{outline:none;border-color:var(--accent)}
+.leadfine{font-size:12px;color:var(--muted);margin-top:10px}
+.leadfine a{color:var(--accent)}
+.altlead{margin-top:14px;font-size:13px;color:var(--muted)}
+.altlead a{color:var(--accent)}
+.note{background:#101736;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--muted);margin-top:18px}
+footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;text-align:center}
+footer a{color:var(--accent);text-decoration:none}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:640px){h1{font-size:24px}.tab small{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Correctover <span>· AI Reliability™ — Agent Runtime Assurance</span></div>
+  <h1>Free AI Agent Security Scanner</h1>
+  <p class="lede">Scan an <strong>MCP configuration</strong> or an entire <strong>agent codebase / npm package</strong> for critical security patterns — hardcoded secrets, plaintext endpoints, SSRF/metadata access, shell injection, dynamic eval, missing permission gates, timeouts and kill switches. Findings map to <strong>OWASP AISVS 1.0</strong>.</p>
+  <div class="privacy">🔒 Runs 100% in your browser — your files never leave your machine. No upload, no account, no telemetry.</div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="config">① MCP config scan<small>paste JSON / .mcp.json</small></div>
+    <div class="tab" data-tab="bundle">② Codebase / package scan<small>drag a project folder or .js/.tgz</small></div>
+  </div>
+
+  <!-- ============ CONFIG PANEL ============ -->
+  <div class="panel active" id="panel-config">
+    <p style="color:var(--muted);font-size:14px;margin-bottom:10px">Paste your MCP client config (<code style="font-family:var(--mono)">mcp.json</code>, <code style="font-family:var(--mono)">.cursor/mcp.json</code>, Claude/Cline/Vscode-style):</p>
+    <textarea id="cfgText" placeholder='{
+  "mcpServers": {
+    "my-server": { "url": "https://api.example.com/mcp" }
+  }
+}'></textarea>
+    <div>
+      <button class="btn" id="btnConfig">Scan config →</button>
+    </div>
+    <div class="err" id="cfgErr"></div>
+  </div>
+
+  <!-- ============ BUNDLE PANEL ============ -->
+  <div class="panel" id="panel-bundle">
+    <div class="drop" id="drop">
+      <div style="font-size:28px">📁</div>
+      <div><strong>Drop your project folder here</strong> or click to choose</div>
+      <div class="hint">Accepts a folder, one or more <strong>.js / .mjs / .cjs / .ts</strong> files, or an unpacked npm package.<br>
+      <code style="font-family:var(--mono)">node_modules</code> and dot-files are skipped. Tip: <code style="font-family:var(--mono)">npm pack &lt;pkg&gt; &amp;&amp; tar xzf</code> to audit any published package.</div>
+      <input type="file" id="fileInput" webkitdirectory directory multiple style="display:none">
+      <input type="file" id="fileInputFlat" multiple accept=".js,.mjs,.cjs,.ts,.json" style="display:none">
+    </div>
+    <div class="filestatus" id="fileStatus"></div>
+    <div>
+      <button class="btn ghost" id="btnPickDir" style="margin-right:8px">Choose folder…</button>
+      <button class="btn ghost" id="btnPickFiles">Choose files…</button>
+      <button class="btn" id="btnBundle" disabled>Scan codebase →</button>
+    </div>
+    <div class="err" id="bundleErr"></div>
+  </div>
+
+  <!-- ============ RESULTS ============ -->
+  <div id="results">
+    <div class="leadbox">
+      <h2 id="leadTitle">Your report is ready.</h2>
+      <p id="leadSub"></p>
+      <div class="leadrow">
+        <input type="email" id="leadEmail" placeholder="you@company.com — get the full 116-check interpretation of these findings">
+        <button class="btn ok" id="btnLead">Email me the deep interpretation →</button>
+      </div>
+      <div class="leadfine">What happens next: your email opens with a <strong>pre-filled summary of your own results</strong> (target, score, counts). We reply within one business day with how each finding maps to the <strong>116-check manual audit methodology</strong> — reachability, exploit paths, prioritized fixes. No spam, no mailing list. Or <a href="#" id="dlReport">download the report</a> / <a href="#" id="viewReport">view it in a new tab</a> without leaving an email.</div>
+      <div class="altlead">Shipping this for real? <a href="https://dshcorrectover.github.io/agent-audit/">Learn about the 5-day manual deep audit — if we find no critical-severity issue, you pay nothing.</a></div>
+    </div>
+    <div class="note" id="scopeNote"></div>
+  </div>
+
+  <footer>
+    Powered by the same engine as <strong>correctover-scan</strong> (<code style="font-family:var(--mono)">npx correctover-scan</code>) · static analysis, entirely local ·
+    <a href="https://correctover.com">correctover.com</a> ·
+    <a href="https://github.com/DSHCorrectover">github.com/DSHCorrectover</a> ·
+    <a href="https://github.com/DSHCorrectover/correctover-scan-action">scan on every push (GitHub Action)</a>
+  </footer>
+</div>
+
+<script>
+/* ===== inlined scanner engine (generated from core/ — see tools/build-browser.js) ===== */
+</script>
+<script src="scan-bundle.js"></script>
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+  const MAX_FILES = 400, MAX_BYTES = 300 * 1024; // per file
+  let picked = []; // {relPath, content}
+  let lastReport = null, lastTarget = '';
+
+  // ---- tabs ----
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    $('panel-' + t.dataset.tab).classList.add('active');
+  }));
+
+  function showErr(id, msg) { const e = $(id); e.textContent = msg; e.style.display = msg ? 'block' : 'none'; }
+
+  // ---- config scan ----
+  $('btnConfig').addEventListener('click', () => {
+    showErr('cfgErr', '');
+    const text = $('cfgText').value.trim();
+    if (!text) return showErr('cfgErr', 'Paste a config first.');
+    try {
+      const r = window.CorrectoverScan.scanConfig(text, 'mcp.json');
+      const target = 'pasted-mcp-config';
+      renderResults(r, target);
+    } catch (e) {
+      showErr('cfgErr', 'Could not parse/scan that config: ' + e.message + ' — JSON and simple YAML are supported.');
+    }
+  });
+
+  // ---- bundle file picking ----
+  const drop = $('drop');
+  function ingest(fileList) {
+    const arr = [...fileList];
+    const kept = [];
+    let skipped = 0;
+    for (const f of arr) {
+      const rel = f.webkitRelativePath ? f.webkitRelativePath.split('/').slice(1).join('/') : f.name;
+      if (!rel) { skipped++; continue; }
+      const segs = rel.split('/');
+      if (segs.some(s => s === 'node_modules' || s.startsWith('.'))) { skipped++; continue; }
+      if (!/\.(js|mjs|cjs|ts|json)$/i.test(f.name)) { skipped++; continue; }
+      if (f.size > MAX_BYTES) { skipped++; continue; }
+      if (kept.length >= MAX_FILES) { skipped++; continue; }
+      kept.push({ relPath: rel, file: f });
+    }
+    picked = kept;
+    $('fileStatus').textContent = kept.length
+      ? `✔ ${kept.length} file(s) ready (${kept.some(k => k.relPath === 'package.json') ? 'package.json found — entry points included' : 'no package.json — all JS files will be scanned'}). node_modules/dotfiles/oversized skipped: ${skipped}.`
+      : `No scannable files found (skipped ${skipped}). Pick .js/.mjs/.cjs/.ts files or a project folder.`;
+    $('btnBundle').disabled = kept.length === 0;
+  }
+  drop.addEventListener('click', (e) => { if (e.target.tagName !== 'BUTTON') $('btnPickDir').click(); });
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); ingest(e.dataTransfer.files); });
+  $('btnPickDir').addEventListener('click', (e) => { e.stopPropagation(); $('fileInput').click(); });
+  $('btnPickFiles').addEventListener('click', (e) => { e.stopPropagation(); $('fileInputFlat').click(); });
+  $('fileInput').addEventListener('change', e => ingest(e.target.files));
+  $('fileInputFlat').addEventListener('change', e => ingest(e.target.files));
+
+  $('btnBundle').addEventListener('click', async () => {
+    showErr('bundleErr', '');
+    const btn = $('btnBundle');
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Reading files…';
+    try {
+      const files = [];
+      for (const p of picked) files.push({ relPath: p.relPath, content: await p.file.text() });
+      const CS = window.CorrectoverScan;
+      CS.reset();
+      CS.loadFiles(files);
+      const r = CS.scanBundle();
+      if (!r.fileCount) { showErr('bundleErr', 'No JavaScript files discovered under the selected path.'); return; }
+      renderResults(r, files.some(f => f.relPath === 'package.json') ? 'uploaded-project' : 'uploaded-files');
+    } catch (e) {
+      showErr('bundleErr', 'Scan failed: ' + e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Scan codebase →';
+    }
+  });
+
+  // ---- render results + build report ----
+  function renderResults(r, target) {
+    const CS = window.CorrectoverScan;
+    const modeLabel = r.mode === 'config' ? 'MCP config scan' : 'bundle/code scan';
+    const html = CS.report({
+      mode: modeLabel, target, items: r.items, totals: r.totals,
+      checksLabel: r.checksLabel, version: CS.version,
+    });
+    lastReport = html; lastTarget = target;
+
+    const { score, pass, warn, fail, info } = r.totals;
+    const grade = fail > 0 || score < 60 ? 'CRITICAL RISK' : warn > 0 || score < 85 ? 'REVIEW RECOMMENDED' : 'NO CRITICAL FINDINGS';
+    $('leadTitle').textContent = `Report ready — score ${score}/100 · ${grade}`;
+    $('leadSub').textContent = r.mode === 'bundle'
+      ? `Scanned ${r.fileCount} JS file(s) in your browser. ${fail} critical, ${warn} warnings, ${pass} passed, ${info} info. Nothing was uploaded.`
+      : `14 config checks ran in your browser. ${fail} critical, ${warn} warnings, ${pass} passed, ${info} info. Nothing was uploaded.`;
+    $('scopeNote').innerHTML = 'Automated scanning covers surface signals with file/line locations — it does not prove reachability or exploitability. Fail/warn items are the input for the <strong>116-check manual deep audit</strong>, which traces real exploit paths in your code.';
+    $('results').style.display = 'block';
+    $('results').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function reportBlob() {
+    return new Blob([lastReport], { type: 'text/html' });
+  }
+  $('dlReport').addEventListener('click', e => {
+    e.preventDefault();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(reportBlob());
+    a.download = 'correctover-scan-report.html';
+    a.click();
+  });
+  $('viewReport').addEventListener('click', e => {
+    e.preventDefault();
+    const w = window.open();
+    w.document.write(lastReport);
+    w.document.close();
+  });
+
+  // ---- LEAD CAPTURE: mailto with prefilled result summary (zero backend) ----
+  $('btnLead').addEventListener('click', () => {
+    const email = ($('leadEmail').value || '').trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { $('leadEmail').focus(); return; }
+    // pull a compact summary out of the last run (re-read from rendered page)
+    const title = $('leadTitle').textContent;
+    const sub = $('leadSub').textContent;
+    const body = [
+      'Hi Correctover team,',
+      '',
+      'I just ran the free in-browser scanner (https://dshcorrectover.github.io/agent-audit/scan.html).',
+      '',
+      'My contact email: ' + email,
+      'Target type: ' + lastTarget,
+      'Result summary: ' + title,
+      sub,
+      '',
+      'Please send me how these findings map to the 116-check manual audit methodology (reachability, exploit paths, prioritized fixes).',
+      '',
+      'Thanks',
+    ].join('\n');
+    const url = 'mailto:wangguigui@correctover.com?subject=' + encodeURIComponent('[Free Scan] 116-check interpretation request — ' + lastTarget) + '&body=' + encodeURIComponent(body);
+    window.location.href = url;
+  });
+})();
+</script>
+</body>
+</html>
