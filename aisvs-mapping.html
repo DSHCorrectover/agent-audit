@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AISVS 1.0 Coverage Map — what the free scanner covers · Correctover</title>
+<meta name="description" content="Honest chapter-by-chapter coverage map: which OWASP AISVS 1.0 control families the Correctover free scanner checks, which it does not, and what the manual deep audit adds.">
+<link rel="canonical" href="https://dshcorrectover.github.io/agent-audit/aisvs-mapping.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AISVS 1.0 Coverage Map — what the free scanner covers">
+<meta property="og:description" content="Chapter-by-chapter: what the in-browser scanner checks, what it does not, and what the manual deep audit adds.">
+<meta property="og:url" content="https://dshcorrectover.github.io/agent-audit/aisvs-mapping.html">
+<meta property="og:site_name" content="Correctover">
+<style>
+:root{--bg:#0b1020;--card:#141d38;--line:#263156;--text:#e8ecf8;--muted:#9aa7c7;--accent:#4f7cff;--ok:#37d0a0;--warn:#f0b955;--bad:#ff5d5d;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.wrap{max-width:920px;margin:0 auto;padding:36px 18px 80px}
+.brand{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.brand span{color:var(--muted);font-weight:400;letter-spacing:.05em;text-transform:none}
+h1{font-size:28px;margin:12px 0 8px;line-height:1.25}
+.lede{color:var(--muted);font-size:15px;max-width:720px}
+h2{font-size:19px;margin:34px 0 14px}
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card);border-radius:12px;overflow:hidden}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#101736;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+.cov{font-weight:700;white-space:nowrap}
+.cov.yes{color:var(--ok)}.cov.no{color:var(--muted)}.cov.partial{color:var(--warn)}
+code{font-family:var(--mono);background:#0d1430;padding:1px 6px;border-radius:4px;font-size:12px}
+.chip{display:inline-block;background:#0d1430;border:1px solid var(--line);border-radius:6px;padding:1px 8px;font-size:12px;margin:2px 4px 2px 0;white-space:nowrap}
+.chip.auto{border-color:rgba(55,208,160,.4);color:var(--ok)}
+.chip.semi{border-color:rgba(240,185,85,.4);color:var(--warn)}
+.note{background:#101736;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--muted);margin:18px 0}
+.disclaimer{background:rgba(240,185,85,.06);border:1px solid rgba(240,185,85,.4);border-radius:12px;padding:18px 20px;margin:26px 0;font-size:12.5px;color:var(--muted)}
+.disclaimer h2{font-size:15px;color:var(--warn);margin:0 0 10px}
+.disclaimer p{margin-bottom:8px}.disclaimer p:last-child{margin-bottom:0}
+.disclaimer strong{color:var(--text)}
+.cta{display:inline-block;background:var(--accent);color:#fff;border-radius:10px;padding:13px 26px;font-size:15px;font-weight:700;text-decoration:none;margin-top:16px}
+.cta.ghost{background:transparent;border:1px solid var(--line);color:var(--text);margin-left:10px}
+footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;text-align:center}
+footer a{color:var(--accent);text-decoration:none}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Correctover <span>· AI Reliability™ — Agent Runtime Assurance</span></div>
+  <h1>AISVS 1.0 Coverage Map</h1>
+  <p class="lede">OWASP AISVS v1.0 (released 24 June 2026) defines 12 requirement chapters across the AI lifecycle, with requirements at verification levels 1–3. The free scanner runs <strong>31 static checks</strong> (14 for MCP configurations, 17 for code/bundles). This page states honestly <strong>which chapters those checks touch, and which they do not</strong>.</p>
+
+  <div class="note">References: <a href="https://github.com/OWASP/AISVS" rel="noopener">OWASP/AISVS repository</a> · <a href="https://owasp.org/www-project-artificial-intelligence-security-verification-standard-aisvs-docs/" rel="noopener">official AISVS documentation</a>. Chapter names below follow the official v1.0 text.</div>
+
+  <h2>Chapter coverage at a glance</h2>
+  <table>
+    <tr><th style="width:70px">Chapter</th><th>AISVS v1.0 requirement chapter</th><th style="width:170px">Free scanner</th></tr>
+    <tr><td><code>C1</code></td><td>Training Data Integrity &amp; Traceability</td><td class="cov no">○ Not covered</td></tr>
+    <tr><td><code>C2</code></td><td>Input Validation (prompt-injection defenses, content screening)</td><td class="cov yes">● Static signals</td></tr>
+    <tr><td><code>C3</code></td><td>Model Lifecycle Management &amp; Change Control</td><td class="cov no">○ Not covered</td></tr>
+    <tr><td><code>C4</code></td><td>Infrastructure, Configuration &amp; Deployment Security</td><td class="cov yes">● Static signals</td></tr>
+    <tr><td><code>C5</code></td><td>Access Control &amp; Identity</td><td class="cov yes">● Static signals</td></tr>
+    <tr><td><code>C6</code></td><td>Supply Chain Security for Models, Frameworks &amp; Data</td><td class="cov partial">◐ Partial signals</td></tr>
+    <tr><td><code>C7</code></td><td>Model Behavior, Output Control &amp; Safety Assurance</td><td class="cov partial">◐ Partial signals</td></tr>
+    <tr><td><code>C8</code></td><td>Memory, Embeddings &amp; Vector Database Security</td><td class="cov no">○ Not covered</td></tr>
+    <tr><td><code>C9</code></td><td>Autonomous Orchestration &amp; Agentic Action Security</td><td class="cov yes">● Static signals</td></tr>
+    <tr><td><code>C10</code></td><td>Model Context Protocol (MCP) Security</td><td class="cov yes">● Static signals</td></tr>
+    <tr><td><code>C11</code></td><td>Adversarial Robustness &amp; Attack Resistance</td><td class="cov no">○ Not covered</td></tr>
+    <tr><td><code>C12</code></td><td>Monitoring, Logging &amp; Anomaly Detection</td><td class="cov partial">◐ Partial signals</td></tr>
+  </table>
+
+  <h2>What the 31 checks actually look for</h2>
+  <table>
+    <tr><th style="width:110px">Chapter</th><th>Checks (static patterns, with file/line locations)</th></tr>
+    <tr><td><code>C10</code> MCP Security</td><td>
+      <span class="chip auto">TLS / plaintext HTTP endpoints</span>
+      <span class="chip auto">MCP transport authentication</span>
+      <span class="chip auto">SSRF: cloud metadata &amp; internal addresses (169.254.169.254, RFC1918 ranges)</span>
+    </td></tr>
+    <tr><td><code>C9</code> Agentic Action</td><td>
+      <span class="chip auto">Timeout / interruption signals</span>
+      <span class="chip auto">Tool allowlists &amp; permission gates</span>
+      <span class="chip auto">Kill switch / AbortController</span>
+      <span class="chip semi">Token / cost budgets (semi-automated)</span>
+    </td></tr>
+    <tr><td><code>C5</code> Access Control</td><td>
+      <span class="chip auto">Hardcoded credentials &amp; API keys</span>
+      <span class="chip auto">Credential flow via environment variables</span>
+    </td></tr>
+    <tr><td><code>C4</code> Infrastructure</td><td>
+      <span class="chip auto">Subprocess execution (shell:true, exec)</span>
+      <span class="chip auto">Dynamic code execution (eval / Function / vm)</span>
+      <span class="chip auto">Sandbox / isolation mechanisms</span>
+    </td></tr>
+    <tr><td><code>C2</code> Input Validation</td><td>
+      <span class="chip auto">Input validation &amp; schema enforcement</span>
+    </td></tr>
+    <tr><td><code>C7</code> Output Control</td><td>
+      <span class="chip semi">Output truncation / filtering (semi-automated)</span>
+    </td></tr>
+    <tr><td><code>C6</code> Supply Chain</td><td>
+      <span class="chip semi">Dependency version pinning / vendor SBOM signals (semi-automated)</span>
+    </td></tr>
+    <tr><td><code>C12</code> Monitoring</td><td>
+      <span class="chip semi">Audit logging / telemetry (semi-automated)</span>
+      <span class="chip semi">Error handling &amp; retry policy (semi-automated)</span>
+    </td></tr>
+  </table>
+  <div class="note"><span class="chip auto">● automated</span> pattern detection · <span class="chip semi">◐ semi-automated</span> flags candidate code regions for human confirmation (library code legitimately contains such patterns; context determines whether a gate exists).</div>
+
+  <h2>What the free scanner deliberately does not claim</h2>
+  <p style="color:var(--muted);font-size:14px">
+    <strong style="color:var(--text)">C1 (training data)</strong>, <strong style="color:var(--text)">C3 (model lifecycle/change control)</strong>, <strong style="color:var(--text)">C8 (memory, embeddings, vector databases)</strong> and <strong style="color:var(--text)">C11 (adversarial robustness)</strong> cannot be assessed by static pattern matching on client code and MCP configs — they concern data provenance, model artifacts, embedding pipelines and runtime attack resistance. Even within the 8 chapters touched, the scanner sees <em>surface signals only</em>: it does not prove reachability, exploitability, or whether a flagged pattern is a real vulnerability versus a safe/legitimate use. Library code (including this scanner itself) contains patterns like <code>child_process</code> and credential-matching regular expressions that are detection logic, not vulnerabilities — expect false positives, and false negatives.
+  </p>
+  <p style="color:var(--muted);font-size:14px;margin-top:12px">
+    The <strong>116-check manual deep audit</strong> works from the scanner's raw signals and traces each one through real call paths — reachability, exploitability, semantic intent, prioritized remediation — under a signed engagement. It still does not certify AISVS; it delivers an opinion scoped to the code and timeframe agreed.
+  </p>
+
+  <div class="disclaimer">
+    <h2>⚠ Legal notice</h2>
+    <p><strong>Not an audit or certification.</strong> The free scanner's output is automated static analysis. It is not a security audit, penetration test, certification, or statement of compliance with AISVS or any other standard. No score — including a clean scan — constitutes evidence that a system is secure, vulnerability-free, or compliant.</p>
+    <p><strong>OWASP trademarks.</strong> OWASP® and AISVS are trademarks of the OWASP Foundation. Correctover is an independent project, not affiliated with or endorsed by OWASP. OWASP does not certify products or vendors. The chapter mappings on this page are Correctover's own, provided for navigation only.</p>
+    <p><strong>Use at your own risk.</strong> The scanner and reports are provided "as is", without warranty of any kind. To the maximum extent permitted by law, Correctover shall not be liable for damages arising from their use. Do not rely on a free scan as the sole basis for acceptance, procurement, release, insurance, or regulatory decisions.</p>
+  </div>
+
+  <a class="cta" href="scan.html">▶ Run the free in-browser scanner</a>
+  <a class="cta ghost" href="https://dshcorrectover.github.io/agent-audit/">Learn about the 5-day manual deep audit</a>
+
+  <footer>
+    Correctover — static analysis that runs entirely in your browser ·
+    <a href="https://correctover.com">correctover.com</a> ·
+    <a href="https://github.com/DSHCorrectover">github.com/DSHCorrectover</a>
+  </footer>
+</div>
+</body>
+</html>
