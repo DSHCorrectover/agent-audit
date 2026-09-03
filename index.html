@@ -156,6 +156,21 @@
     transition: all 0.2s ease;
     border: 1px solid var(--accent);
   }
+  .cta-online {
+    display: inline-block;
+    margin-left: 14px;
+    background: linear-gradient(135deg, #37d0a0, #2bb58a);
+    color: #0b1020;
+    font-weight: 800;
+    padding: 14px 30px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 24px rgba(55,208,160,.35);
+    transition: transform .15s;
+  }
+  .cta-online:hover { transform: translateY(-2px); }
+  .cta-online .sub2 { display:block; font-size:.72rem; font-weight:600; opacity:.85; margin-top:2px; }
   .cta:hover {
     background: transparent;
     color: var(--accent);
@@ -585,6 +600,7 @@ a.lead-btn { display: inline-block; font-size: 1.08rem; font-weight: 700; paddin
       5 Days<span class="sep">·</span>Signed Conformance Report
     </p>
     <a href="mailto:wangguigui@correctover.com?subject=Agent%20Output%20Audit%20Request" class="cta">Request Audit</a>
+    <a href="scan.html" class="cta-online">▶ Scan free in your browser<span class="sub2">instant · no upload · no signup</span></a>
 
     <div class="hero-meta">
       <div class="hero-meta-item">
@@ -612,6 +628,9 @@ a.lead-btn { display: inline-block; font-size: 1.08rem; font-weight: 700; paddin
   <div class="container">
     <div class="lead-card">
       <div class="lead-eyebrow">Free · No obligation</div>
+      <h2 style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">Want it <em style="color:#37d0a0;font-style:normal">right now</em>? <a href="scan.html" style="font-size:1rem;background:linear-gradient(135deg,#37d0a0,#2bb58a);color:#0b1020;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:800">▶ Open the free in-browser scanner</a></h2>
+      <p class="lead-sub" style="margin-bottom:26px">Scan an MCP config or an entire agent codebase <strong>instantly in your browser</strong> — nothing is uploaded, no account needed. You get a shareable branded report with file/line findings mapped to OWASP AISVS 1.0. Prefer a human-written interpretation? The email path below still applies.</p>
+      <div style="height:1px;background:var(--border,rgba(255,255,255,.12));margin:8px 0 22px"></div>
       <h2>Get a free 1-page scan summary</h2>
       <p class="lead-sub">Send us your agent endpoint, repository, or an exported trace log. You get back a concise, human-readable summary of what an automated surface scan finds — and where a manual Correctover audit would dig deeper.</p>
       <ul class="lead-points">
