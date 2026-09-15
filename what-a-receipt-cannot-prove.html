@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What a Signed Receipt Can and Cannot Prove About an Agent's Tool Call</title>
+<meta name="description" content="A signature proves an assertion was made by a key holder. It does not prove the action happened. A layered model for reasoning about evidence in agent runtimes.">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0f; --bg-alt: #0e0e16; --bg-card: rgba(255,255,255,0.025);
+    --border: rgba(255,255,255,0.07); --text: #d4d4dc; --text-hi: #f0f0f5;
+    --text-dim: #6e6e82; --accent: #00d4aa; --accent-dim: rgba(0,212,170,0.12);
+    --yellow: #d4a72c; --red: #e05555;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.75; font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body::before { content:''; position:fixed; inset:0; background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px); background-size:32px 32px; pointer-events:none; z-index:0; }
+  .container { max-width: 760px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  .topbar { border-bottom: 1px solid var(--border); padding: 16px 0; background: rgba(10,10,15,0.85); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 100; }
+  .topbar .container { display:flex; align-items:center; justify-content:space-between; max-width:960px; }
+  .brand { font-family: var(--mono); font-size: 13px; color: var(--text-dim); }
+  .brand a { color: var(--text-dim); text-decoration: none; }
+  .cta { font-family: var(--mono); font-size: 13px; background: var(--accent); color: #0b1020; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 700; }
+  article { padding: 56px 0 40px; }
+  h1 { font-size: 2.1rem; line-height: 1.25; color: var(--text-hi); letter-spacing: -0.02em; margin-bottom: 14px; }
+  .subtitle { font-size: 1.08rem; color: var(--text-dim); margin-bottom: 28px; }
+  .meta { font-family: var(--mono); font-size: 12px; color: var(--text-dim); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 12px 0; margin-bottom: 36px; }
+  h2 { font-size: 1.4rem; color: var(--text-hi); margin: 44px 0 14px; letter-spacing: -0.01em; }
+  h3 { font-size: 1.1rem; color: var(--text-hi); margin: 28px 0 10px; }
+  p { margin-bottom: 16px; }
+  ul, ol { margin: 0 0 18px 22px; }
+  li { margin-bottom: 8px; }
+  code { font-family: var(--mono); font-size: 0.88em; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; color: #9fe8d6; }
+  pre { font-family: var(--mono); font-size: 0.84rem; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; overflow-x: auto; margin: 0 0 20px; line-height: 1.6; color: #b9c2d0; }
+  .callout { background: var(--bg-card); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 0 0 22px; }
+  .callout.warn { border-left-color: var(--yellow); }
+  .layer { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 14px; }
+  .layer strong { color: var(--accent); font-family: var(--mono); font-size: 0.85rem; }
+  footer { border-top: 1px solid var(--border); padding: 32px 0 56px; color: var(--text-dim); font-size: 0.9rem; }
+  footer a { color: var(--accent); }
+  .nav-back { font-family: var(--mono); font-size: 12px; color: var(--text-dim); text-decoration: none; display:inline-block; margin-bottom: 24px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="container">
+    <div class="brand"><a href="./">← Correctover / Agent Output Audit</a></div>
+    <a class="cta" href="./">Back to audit</a>
+  </div>
+</div>
+
+<article class="container">
+  <a class="nav-back" href="./">← index</a>
+  <h1>What a Signed Receipt Can and Cannot Prove About an Agent's Tool Call</h1>
+  <p class="subtitle">Signatures are cheap. Binding a signed statement to the real world is not — and most "agent audit trail" designs quietly assume that problem away.</p>
+  <div class="meta">Engineering note · Correctover · 2026-09-15</div>
+
+  <h2>The category error</h2>
+  <p>When teams start instrumenting autonomous agents, a common shortcut appears: wrap every tool call in a signed envelope, hash-chain the envelopes, and call the result an audit trail. The cryptography works. The signatures verify. And the resulting artifact still may not support the claim people want to make with it — that <em>this action happened</em>.</p>
+  <p>That gap is not a bug in any particular library. It is structural, and it is worth being precise about, because an evidence system that overclaims is worse than no evidence system: it moves a security decision onto a foundation that cannot carry it.</p>
+
+  <h2>What a signature actually establishes</h2>
+  <p>Given a signature over a byte string <code>S</code> that verifies under public key <code>P</code>, you learn three things:</p>
+  <ol>
+    <li>The private key corresponding to <code>P</code> was used to produce this signature.</li>
+    <li><code>S</code> has not been altered since — any modification invalidates the signature.</li>
+    <li>Therefore, whoever held that private key asserted <code>S</code>.</li>
+  </ol>
+  <p>That is the whole list. Notice what is absent: any statement about whether <code>S</code> is <em>true</em>. A signature is an assertion by a key holder. It is not an observation of the world, and the two are routinely conflated.</p>
+  <div class="callout">
+    <strong>The one-line version:</strong> a signature proves <em>someone said this</em>. Everything else you want from an audit trail is a separate problem, and each one has its own trust assumption.
+  </div>
+
+  <h2>Five things people believe they have proven</h2>
+  <p>In practice, a signed tool-call receipt is often described as if it established the following. It does not, at least not on its own.</p>
+
+  <h3>1. That the agent actually performed the action</h3>
+  <p>A receipt is produced by software. If the same process that could fabricate the action can also reach the signing key, the receipt attests to an assertion, not to execution. Signing from inside the process you do not trust is circular.</p>
+
+  <h3>2. That the action had the claimed effect</h3>
+  <p>"Called <code>refund_order</code> with these parameters" and "a refund occurred" are different propositions. The first is knowable locally; the second lives in a system you do not control. Only the counterparty — or an independent log on their side — can speak to the effect.</p>
+
+  <h3>3. That the inputs were authentic</h3>
+  <p>A signature over a tool call says nothing about where the arguments came from. If untrusted content reached the model's context and steered the call, every signature in the chain still verifies. Provenance of inputs is a separate control, and it has to be captured before the model acts, not after.</p>
+
+  <h3>4. That a human authorized it</h3>
+  <p>Unless there is a distinct authorization artifact, produced by a different key holder, and bound to the <em>same</em> request identifier as the execution record, "the agent signed it" is not evidence of human intent. Two independently signed facts are only useful if something ties them together.</p>
+
+  <h3>5. That the business fact is true</h3>
+  <p>This is the one that tends to surface late, usually during an incident review or an audit. Integrity of a record and truth of its contents are orthogonal. A perfectly signed, perfectly chained log of fabricated events is still a log of fabricated events.</p>
+
+  <h2>Where the trust actually lands</h2>
+  <p>The useful question is never "is it signed." It is "who is the signer, and what would it take for that signer to lie?" Every design puts the root somewhere:</p>
+  <ul>
+    <li><strong>The agent runtime signs.</strong> You trust the runtime, its configuration, and its key custody.</li>
+    <li><strong>A sidecar monitor signs.</strong> You trust the monitor — and you additionally need coverage: what happens to calls that route around it?</li>
+    <li><strong>The remote server signs.</strong> You trust the counterparty, which is fine if that is the point, and useless if it is not.</li>
+    <li><strong>A hardware enclave signs.</strong> You trust the silicon vendor and the attestation chain — the root moved, it did not disappear.</li>
+    <li><strong>A timestamping authority signs.</strong> You trust its clock and its refusal to backdate.</li>
+  </ul>
+  <p>There is no configuration in which the trust root is empty. The design work is choosing where it sits, and being explicit about it in the documentation rather than in a footnote.</p>
+
+  <h2>What hash chaining does and does not buy you</h2>
+  <p>Append-only structures and Merkle inclusion proofs are genuinely useful, but for narrower properties than they are often credited with.</p>
+  <p><strong>They give you consistency:</strong> given a signed tree head you have previously retained, an operator cannot silently rewrite history without detection. <strong>They give you inclusion:</strong> a specific record is provably in the log.</p>
+  <p><strong>They do not give you completeness.</strong> "There is no record of X" is not provable from an inclusion proof. Absence claims require either an exhaustive log or an operator you already trust.</p>
+  <p><strong>They do not give you truth.</strong> A log faithfully preserves whatever was written to it.</p>
+  <div class="callout warn">
+    The pinning detail matters more than it looks. If you never retain a signed tree head, the operator can present different, internally consistent histories to different verifiers. The log becomes a coordination device rather than an evidence device.
+  </div>
+
+  <h2>The binding problem</h2>
+  <p>Most real failures are not cryptographic. They are failures to bind signed statements to the events they are supposed to describe.</p>
+  <ul>
+    <li><strong>Identifier binding.</strong> The authorization record and the execution record must reference the same identifier. Otherwise a valid receipt for action A can be presented as evidence about action B.</li>
+    <li><strong>Replay.</strong> A valid signature from last week is still a valid signature. Without a nonce and a validity window, receipts are transferable across time.</li>
+    <li><strong>Expiry and rotation.</strong> Receipts need a notion of "valid at the time of use," and a documented story for what happens when keys rotate. A receipt whose verification semantics change at rotation is not a durable artifact.</li>
+    <li><strong>Key custody inside agents.</strong> Agents typically run in shared, frequently rebuilt environments. A key that lives alongside the code has the same blast radius as the code.</li>
+  </ul>
+
+  <h2>A layered model</h2>
+  <p>It helps to be explicit about which layer a given artifact covers, and to refuse to describe one layer using another's language.</p>
+  <div class="layer"><strong>LAYER 0 — INTENT</strong><br>What was authorized, by whom, with what scope and expiry. Signed by an authority distinct from the executor.</div>
+  <div class="layer"><strong>LAYER 1 — EXECUTION</strong><br>What the runtime attempted: tool identity, arguments, the decision that admitted the call. Knowable locally. This is where most "agent audit" designs stop.</div>
+  <div class="layer"><strong>LAYER 2 — EFFECT</strong><br>What the downstream system observed. Requires the counterparty to co-sign or to keep its own independent log. Cannot be manufactured locally.</div>
+  <div class="layer"><strong>LAYER 3 — ENVIRONMENT</strong><br>Attestation about the platform the runtime ran on. Moves the trust root rather than removing it.</div>
+  <p>The common overclaim is to produce a Layer 1 artifact and describe it in Layer 2 terms. That is the specific failure worth designing against.</p>
+
+  <h2>A checklist for any receipt format</h2>
+  <p>Questions worth asking before an evidence format goes into a security narrative:</p>
+  <ol>
+    <li>Who holds the signing key, and what else can that process do?</li>
+    <li>What identifier binds this receipt to the authorization it claims to implement?</li>
+    <li>Is there a validity window? What is the semantics at key rotation?</li>
+    <li>Is there a notion of time that does not depend on the signer's own clock?</li>
+    <li>If the log operator is malicious, what exactly do you detect — and what requires a pinned tree head?</li>
+    <li>Does this artifact claim an attempt, or an effect? Which word does the documentation use?</li>
+    <li>Who could produce a receipt for an action that never happened, and what prevents it?</li>
+    <li>When verification fails, does the system fail open or fail closed?</li>
+  </ol>
+
+  <h2>Why the precision is worth it</h2>
+  <p>The failure mode is not a broken signature. It is a true statement used to support a false one. "This receipt is valid" and "this action occurred" are both reasonable sentences, and only the first follows from the cryptography.</p>
+  <p>The honest framing: a receipt bounds the set of stories that can be told about a run. It narrows the space. It does not, by itself, select the true story — that requires the layers above, each with its own signer and its own explicit trust assumption. Being clear about which layer you have is what keeps an evidence system from becoming a liability during the incident where it is needed.</p>
+
+  <footer>
+    <p>Correctover builds runtime verification for agent tool calls. The audit service and a free in-browser scanner are at <a href="./">dshcorrectover.github.io/agent-audit</a>. Project home: <a href="https://correctover.com">correctover.com</a>.</p>
+    <p style="margin-top:10px;color:var(--text-dim)">Verification note: this page makes no numerical performance claims. Statements about signature semantics are standard properties of digital signature schemes; the layered model and checklist are this project's framing.</p>
+  </footer>
+</article>
+</body>
+</html>
