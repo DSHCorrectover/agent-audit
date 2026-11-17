@@ -2,6 +2,8 @@
 
 Post-migration authorization integrity for MCP / agent deployments. Migration vendors prove you can handshake; we certify you didn't go naked after migration.
 
+**Pay directly — self-service:** USDC on Base to `0xfF5EB80DF3Bf4506cd2d0CCC3c8303e1ee267459`, email the tx hash to wangguigui@correctover.com; on-chain reconciliation is automatic. Invoice issued after funds confirm.
+
 ## Engagement tiers
 
 | Tier | Scope | Price |
